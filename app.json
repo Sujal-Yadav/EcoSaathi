@@ -15,18 +15,31 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ecosaathi.android",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ecosaathi.android"
+      "package": "com.ecosaathi.android",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "ecosaathi"
+    "scheme": "tutorial-google",
+    "extra": {
+      "eas": {
+        "projectId": "dcb8a629-ffdc-4a79-9918-d366e9905bd6"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dcb8a629-ffdc-4a79-9918-d366e9905bd6"
+    }
   }
 }

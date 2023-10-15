@@ -1,27 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, Dimensions, ImageBackground } from "react-native";
 import ProgressCircle from "react-native-progress-circle";
 import { colors } from "../index";
 import { signOut } from 'firebase/auth';
-import { FIREBASE_AUTH } from "../FirebaseConfig";
+// import { FIREBASE_AUTH } from "../FirebaseConfig";
 import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from '@react-navigation/native';
+// import { signOut } from 'firebase/auth';
+import FIREBASE_APP, { FIREBASE_AUTH, FIREBASE_DB, signUpDataRef } from '../FirebaseConfig';
+import { useSelector, useDispatch } from 'react-redux';
+import { getDoc, getDocs, query, where, Firestore, collection } from 'firebase/firestore';
+import { setUserLoading } from "../user";
 
 const percentage = 55;
 const points = 0;
 
 export default function ProfilePage() {
   const navigation = useNavigation();
-  const handleLogout = async ()=>{
-    await signOut(FIREBASE_AUTH);
-    navigation.navigate("Login");
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => state.user);
+  const [events, setEvents] = useState([]);
+  const isFocused = useIsFocused();
+
+  const fetchEvents = async ()=>{
+    console.log(user.uid)
+    const q = query(signUpDataRef, where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    let data = [];
+    querySnapshot.forEach(doc=>{
+        // console.log('documement: ',doc.data());
+        data.push({...doc.data(), id: doc.id})
+    })
+    setEvents(data);
+    console.log(data);
 }
+
+  useEffect(() => {
+    if (isFocused)
+      fetchEvents();
+  }, [isFocused])
+
+  const handleLogout = async () => {
+    await signOut(FIREBASE_AUTH);
+    dispatch(setUserLoading(false));
+    navigation.navigate("BasePage");
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View >
-            <TouchableOpacity onPress={handleLogout} >
-                <Text>Logout</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress = {() => handleLogout()}>
+          <Text>Logout</Text>
+        </TouchableOpacity>
+      </View>
       <View>
         <ImageBackground
           source={require("../assets/greenleaves1.jpg")}
@@ -32,8 +62,17 @@ export default function ProfilePage() {
             style={styles.profileimage}
             source={require("../assets/ria.png")}
           />
-          <Text style={styles.personName}>Ria</Text>
-          <Text style={styles.personLocation}>Dehradun, Uttrakhand</Text>
+          
+          <View>
+            {events.map((item) => (
+              <Text style={styles.personName} key={item.id}>{item.firstName + " " + item.lastName}</Text>
+            ))}
+            {events.map((item) => (
+              <Text style={styles.personLocation} key={item.id}>{item.emailed}</Text>
+            ))}
+          </View>
+          
+
         </View>
       </View>
       <View>
@@ -156,6 +195,8 @@ const styles = StyleSheet.create({
     marginTop: -8,
     fontWeight: '900',
     color: "green",
+    textAlign: "center",
+    justifyContent: "center",
   },
   personLocation: {
     fontSize: 15,

@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Text, StyleSheet, ActivityIndicator, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
+import { View, SafeAreaView, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -9,68 +9,63 @@ import { addDoc } from "firebase/firestore";
 import { useSelector, useDispatch } from "react-redux";
 import { ScreenWrapper } from '../screenWrapper';
 import { setUserLoading } from "../user";
+import DatePicker from 'react-native-modern-datepicker';
+import LottieView from 'lottie-react-native';
+
+const { width, height } = Dimensions.get('window');
 
 export default function SignUpUser() {
     const { userLoading } = useSelector(state => state.user);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [dob, setDOB] = useState("");
-    const [gender, setGender] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { user } = useSelector(state => state.user);
-    const [loading, setLoading] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+    // const [loading, setLoading] = useState("");
     const auth = FIREBASE_AUTH;
 
     const handleSubmit = async () => {
-        if (email && password && firstName && lastName && dob && gender) {
-            try {
-                dispatch(setUserLoading(true));
-                await createUserWithEmailAndPassword(auth, email, password);
+        const userData = {
+            'email': email
+        }
+        if (email) {
+            if (password === passwordConfirm) {
+                try {
+                    dispatch(setUserLoading(true));
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    Snackbar.show({
+                        text: 'Signup Successful',
+                        textColor: 'black',
+                        backgroundColor: 'darkgreen',
+                        duration: Snackbar.LENGTH_SHORT,
+                    });
+                    // setLoading(true);
+                    navigation.navigate("UserDetailsSub", { userData });
+                    dispatch(setUserLoading(false));
+                } catch (e) {
+                    dispatch(setUserLoading(false));
+                    Snackbar.show({
+                        text: e.message,
+                        backgroundColor: 'red'
+                    });
+                }
+            }
+            else {
                 Snackbar.show({
-                    text: 'Signup Successful',
+                    text: 'Password does not match',
                     textColor: 'black',
-                    backgroundColor: 'darkgreen',
+                    backgroundColor: 'red',
                     duration: Snackbar.LENGTH_SHORT,
                 });
-                dispatch(setUserLoading(false));
-            } catch (e) {
-                dispatch(setUserLoading(false));
-                Snackbar.show({
-                    text: e.message,
-                    backgroundColor: 'red'
-                });
             }
+
         }
         else {
             Snackbar.show({
                 text: 'Please enter your email and password',
                 textColor: 'black',
                 backgroundColor: 'red',
-                duration: Snackbar.LENGTH_SHORT,
-            });
-        }
-    }
-
-    const handleAddTrip = async ()=>{
-        if(email && password && firstName && lastName && dob && gender){
-            
-            setLoading(true);
-            let doc = await addDoc(userSignUpData, {
-                firstName, lastName, email, password, gender, dob, 
-                // userId: user.uid
-            });
-            setLoading(false);
-            if(doc && doc.id){
-                navigation.navigate('MyTabs');
-            }
-        }else{
-            // show error
-            Snackbar.show({
-                text: 'Place and Country are required!',
-                backgroundColor: 'red'
+                duration: Snackbar.LENGTH_LONG,
             });
         }
     }
@@ -81,34 +76,9 @@ export default function SignUpUser() {
             <ScrollView>
                 <KeyboardAvoidingView>
 
-                    <Text style={styles.heading}>Create Account With Email</Text>
+                    <Text style={styles.heading}>Create your account:</Text>
                     <View style={styles.inputWrapper}>
 
-                        <Text style={styles.inpText}>First Name:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="First Name" value={firstName}
-                            onChangeText={(firstName) => setFirstName(firstName)}
-                        />
-                        <Text style={styles.inpText}>Last Name:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Last Name" value={lastName}
-                            onChangeText={(lastName) => setLastName(lastName)}
-                        />
-                        <Text style={styles.inpText}>Date of Birth:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Date of Birth" value={dob}
-                            onChangeText={(dob) => setDOB(dob)}
-
-                        />
-                        <Text style={styles.inpText}>Gender:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="" value={gender}
-                            onChangeText={(gender) => setGender(gender)}
-                        />
                         <Text style={styles.inpText}>Your Email:</Text>
                         <TextInput
                             style={styles.input}
@@ -125,21 +95,23 @@ export default function SignUpUser() {
                         <Text style={styles.inpText}>Confirm Password:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="********" value={password}
-                            onChangeText={(password) => setPassword(password)}
+                            placeholder="********" value={passwordConfirm}
+                            onChangeText={(passwordConfirm) => setPasswordConfirm(passwordConfirm)}
                             secureTextEntry={true}
                         />
 
                     </View>
 
-                    {userLoading && loading ? (
-                        <ActivityIndicator />
+                    {userLoading ? (
+                        <View style={{alignItems:'center'}}>
+                            <LottieView style={styles.lottie} source={require('../assets/Animations/earth.json')} autoPlay loop />
+                        </View>
                     ) : (
                         <>
                             <View style={styles.buttonWrapper}>
                                 <TouchableOpacity style={styles.appButtonContainer1}
-                                    onPress={() => {handleSubmit() , handleAddTrip()}}
-                                    >
+                                    onPress={handleSubmit}
+                                >
                                     <Text style={styles.appButtonText}>Sign up with email</Text>
                                 </TouchableOpacity>
                                 <View style={styles.loginOption}>
@@ -165,6 +137,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
+        marginTop: 70,
+    },
+    lottie: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: width * 0.3,
+        height: width,
     },
     arrow: {
         alignSelf: "center",
@@ -185,10 +164,6 @@ const styles = StyleSheet.create({
         height: 30,
         width: 100,
         color: 'green',
-        // borderRadius: 50,
-        // // width: 250,
-        // borderWidth: 2,
-        // borderColor: '#D8D9DA'
     },
     back: {
         paddingHorizontal: 9,
@@ -197,10 +172,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '500',
         color: 'green',
-        // borderRadius: 10,
-        // // width: 250,
-        // borderWidth: 2,
-        // borderColor: '#07411B'
     },
     heading: {
         fontSize: 38,
@@ -225,9 +196,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         color: "rgba(52,87,47,1)",
-        // fontSize: "21px",
-        // lineHeight: "21px",
-        // fontFamily: "Poppins, sans-serif",
         fontWeight: "700",
         textAlign: "center",
     },
@@ -246,6 +214,7 @@ const styles = StyleSheet.create({
     },
     buttonWrapper: {
         alignItems: "center",
+        // marginLeft: 50,
         marginTop: 40,
     },
     appButtonContainer1: {

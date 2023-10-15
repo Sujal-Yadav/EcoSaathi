@@ -12,16 +12,21 @@ import {
   Image,
   ScrollView
 } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 const EventsPage = () => {
   return (
-    
-      <Tab.Navigator>
-        <Tab.Screen name='Events' component={Curr_Events} />
-        <Tab.Screen name='Upcoming' component={Upcoming_events} />
-      </Tab.Navigator>
-    
+
+    <Tab.Navigator screenOptions={() => ({
+      tabBarStyle: {
+        backgroundColor: '#fff'
+      }
+    })}>
+      <Tab.Screen name='Events' component={Curr_Events} />
+      <Tab.Screen name='Upcoming' component={Upcoming_events} />
+    </Tab.Navigator>
+
   )
 }
 const Curr_Events = () => {
@@ -62,7 +67,7 @@ const Curr_Events = () => {
       image: require('../assets/sih3.jpg')
     },
   ];
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -129,7 +134,7 @@ const Upcoming_events = () => {
       image: require('../assets/sih3.jpg')
     },
   ];
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -163,6 +168,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
+    backgroundColor: '#fff',
+
   },
   textContainer: {
     // margin:20,
@@ -236,14 +243,15 @@ const styles = StyleSheet.create({
     // marginLeft:20
   },
   eventsContainer: {
-    backgroundColor: '#D9D9D9',
+    backgroundColor: '#D0E7D2',
     borderwidth: 3,
     borderRadius: 20,
     height: 'auto',
     justifyContent: 'center',
-    // rowGap:10, 
+    marginHorizontal: 15,
     marginVertical: 10,
-    borderColor: "black"
+    borderColor: "black",
+
     // flexDirection:'row',
 
   },

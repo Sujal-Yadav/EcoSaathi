@@ -89,7 +89,7 @@ const questions = [
 ];
 const SurveyPage = ({navigation, route}) => {
   navigation.setOptions({headerShown: true})
-  const { userData } = route.params;
+  // const { userData } = route.params;
   return (
     // <ScrollView style={styles.container}>
     //   {/* <ImageBackground
@@ -111,8 +111,8 @@ const SurveyPage = ({navigation, route}) => {
       
     // </ImageBackground>
     <SafeAreaView style={styles.container}>
-      <Text>{userData.name}</Text>
-      <Text>{userData.email}</Text>
+      {/* <Text>{userData.name}</Text>
+      <Text>{userData.email}</Text> */}
       <FlatList
         data={questions}
         renderItem={({ item }) => <Question question={item.question} />}

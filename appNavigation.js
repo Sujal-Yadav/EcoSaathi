@@ -14,16 +14,20 @@ import SurveyPage from "./screens/SurveyPage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from "./user";
+import UserDetailsSub from "./screens/UserDetails";
+import OnboardingScreen from "./screens/OnBordingScreen";
+import GoogleAuth from "./screens/GoogleAuth";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 export function MyTabs() {
 
     return (
-        <Tab.Navigator>
-            <Tab.Screen name="Forum" component={ForumPage} options={{
+        <Tab.Navigator >
+            <Tab.Screen name="Forum" component={ForumPage}  options={{
                 tabBarLabel: 'Forum',
                 headerShown: false,
+                
                 tabBarIcon: ({ color, size }) => (
                     <Icon name="comments" size={size} color={color} /> // Use FontAwesome icon
                 ),
@@ -63,9 +67,10 @@ export default function AppNavigation() {
         return (
 
             <NavigationContainer>
-                <Stack.Navigator>
+                <Stack.Navigator initialRouteName="MyTabs">
                     <Stack.Screen name="MyTabs" component={MyTabs} options={{ headerShown: false }} />
                     <Stack.Screen name="SurveyPage" component={SurveyPage} options={{ headerShown: false }} />
+                    <Stack.Screen name="UserDetailsSub" component={UserDetailsSub} options={{ headerShown: false }} />
                 </Stack.Navigator>
             </NavigationContainer>
 
@@ -75,12 +80,13 @@ export default function AppNavigation() {
         return (
 
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="BasePage">
-                    <Stack.Screen name="BasePage" component={BasePage} options={{ headerShown: false }} />
+                <Stack.Navigator initialRouteName="Onboarding">
+                    <Stack.Screen name="Onboarding" options={{ headerShown: false }} component={OnboardingScreen} />
+                    {/* <Stack.Screen name="GoogleAuth" component={GoogleAuth} options={{ headerShown: false }} /> */}
                     <Stack.Screen name="SignUp" component={SignUpUser} options={{ headerShown: false }} />
                     <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-                    <Stack.Screen name="SurveyPage" component={SurveyPage} options={{ headerShown: false }} />
-                    <Stack.Screen name="MyTabs" component={MyTabs} options={{ headerShown: false }} />
+                    <Stack.Screen name="BasePage" component={BasePage} options={{ headerShown: false }} />
+
                 </Stack.Navigator>
             </NavigationContainer>
 

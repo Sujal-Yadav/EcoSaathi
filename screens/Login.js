@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import React, { useRef, useState, useEffect } from "react";
+import LottieView from 'lottie-react-native';
 import { FIREBASE_AUTH } from "../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Snackbar from 'react-native-snackbar';
@@ -20,21 +21,23 @@ import { useSelector, useDispatch } from "react-redux";
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { setUserLoading } from "../user";
 
-export default function Login () {
+const { width, height } = Dimensions.get('window');
+
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {userLoading} = useSelector(state=> state.user);
+    const { userLoading } = useSelector(state => state.user);
     const auth = FIREBASE_AUTH;
     const navigation = useNavigation();
 
     const dispatch = useDispatch();
 
-    const handleSubmit = async ()=>{
-        if(email && password){
+    const handleSubmit = async () => {
+        if (email && password) {
             // good to go
             // navigation.goBack();
             // navigation.navigate('Home');
-            try{
+            try {
                 dispatch(setUserLoading(true));
                 await signInWithEmailAndPassword(auth, email, password);
                 Snackbar.show({
@@ -44,15 +47,15 @@ export default function Login () {
                     duration: Snackbar.LENGTH_SHORT,
                 });
                 dispatch(setUserLoading(false));
-            }catch(e){
+            } catch (e) {
                 dispatch(setUserLoading(false));
                 Snackbar.show({
                     text: e.message,
                     backgroundColor: 'red'
                 });
             }
-            
-        }else{
+
+        } else {
             // show error
             Snackbar.show({
                 text: 'Email and Password are required!',
@@ -86,7 +89,9 @@ export default function Login () {
                     />
                 </View>
                 {userLoading ? (
-                    <ActivityIndicator />
+                    <View >
+                        <LottieView style={styles.lottie} source={require('../assets/Animations/earth.json')} autoPlay loop speed={2} />
+                    </View>
                 ) : (
                     <>
                         <View style={styles.buttonWrapper}>
@@ -130,6 +135,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+    },
+    lottie: {
+        alignSelf: "center",
+        width: width * 0.3,
+        height: width
     },
     toastRow: {
         width: "90%",
