@@ -22,18 +22,18 @@ export default function ProfilePage() {
   const [events, setEvents] = useState([]);
   const isFocused = useIsFocused();
 
-  const fetchEvents = async ()=>{
+  const fetchEvents = async () => {
     console.log(user.uid)
     const q = query(signUpDataRef, where("userId", "==", user.uid));
     const querySnapshot = await getDocs(q);
     let data = [];
-    querySnapshot.forEach(doc=>{
-        // console.log('documement: ',doc.data());
-        data.push({...doc.data(), id: doc.id})
+    querySnapshot.forEach(doc => {
+      // console.log('documement: ',doc.data());
+      data.push({ ...doc.data(), id: doc.id })
     })
     setEvents(data);
     console.log(data);
-}
+  }
 
   useEffect(() => {
     if (isFocused)
@@ -48,7 +48,7 @@ export default function ProfilePage() {
   return (
     <SafeAreaView style={styles.container}>
       <View >
-        <TouchableOpacity onPress = {() => handleLogout()}>
+        <TouchableOpacity onPress={() => handleLogout()}>
           <Text>Logout</Text>
         </TouchableOpacity>
       </View>
@@ -62,7 +62,7 @@ export default function ProfilePage() {
             style={styles.profileimage}
             source={require("../assets/ria.png")}
           />
-          
+
           <View>
             {events.map((item) => (
               <Text style={styles.personName} key={item.id}>{item.firstName + " " + item.lastName}</Text>
@@ -71,7 +71,7 @@ export default function ProfilePage() {
               <Text style={styles.personLocation} key={item.id}>{item.emailed}</Text>
             ))}
           </View>
-          
+
 
         </View>
       </View>
