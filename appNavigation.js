@@ -71,6 +71,7 @@ export default function AppNavigation() {
                     <Stack.Screen name="MyTabs" component={MyTabs} options={{ headerShown: false }} />
                     <Stack.Screen name="SurveyPage" component={SurveyPage} options={{ headerShown: false }} />
                     <Stack.Screen name="UserDetailsSub" component={UserDetailsSub} options={{ headerShown: false }} />
+                    {/* <Stack.Screen name="Logout" component={Logout} options={{ headerShown: false }} /> */}
                 </Stack.Navigator>
             </NavigationContainer>
 

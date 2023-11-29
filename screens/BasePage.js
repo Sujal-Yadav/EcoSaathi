@@ -35,17 +35,17 @@ const BasePage = () => {
     androidClientId: "371654267912-hcpntjul9k7ja78a8trvlb3gdrvva5j3.apps.googleusercontent.com",
   });
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        setError('Permission to access location was denied!')
-        return
-      }
-      let location = await Location.getCurrentPositionAsync({})
-      setLocation(location)
-    })();
-  }, [])
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync()
+  //     if (status !== 'granted') {
+  //       setError('Permission to access location was denied!')
+  //       return
+  //     }
+  //     let location = await Location.getCurrentPositionAsync({})
+  //     setLocation(location)
+  //   })();
+  // }, [])
 
   // if (location) {
   //   console.log(location)
@@ -97,7 +97,10 @@ const BasePage = () => {
         const dob = userData.dob;
         const gender = userData.gender;
         const emailed = userData.emailed;
-
+        const q = query(signUpDataRef, where('userId', '==', user.uid));
+        if(q > 1){
+          
+        }
         await addDoc(signUpDataRef, {
           firstName,
           lastName,
